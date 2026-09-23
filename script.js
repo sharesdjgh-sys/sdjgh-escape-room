@@ -35,28 +35,25 @@ let briefingDelay;
 let automaticBriefingOpening = false;
 const briefingAnimations = new WeakMap();
 
-function setCardOpen(card, willOpen, automatic = false) {
+function setCardOpen(card, willOpen) {
   const trigger = card.querySelector(".file-trigger");
   const content = card.querySelector(".file-content");
   const state = card.querySelector(".file-state em");
   briefingAnimations.get(card)?.cancel();
-  content.classList.remove("is-entering");
   trigger.setAttribute("aria-expanded", String(willOpen));
   card.classList.toggle("is-open", willOpen);
   content.hidden = !willOpen;
   let opening;
   if (willOpen) {
-    if (automatic && !reducedMotion) {
-      opening = content.animate([
-        { height: "0px", opacity: 0, transform: "translateY(-8px)" },
-        { height: content.scrollHeight + "px", opacity: 1, transform: "translateY(0)" }
-      ], { duration: 1200, easing: "cubic-bezier(.45,0,.55,1)" });
-      briefingAnimations.set(card, opening);
-    } else if (!reducedMotion) {
-      requestAnimationFrame(() => {
-        if (!content.hidden) content.classList.add("is-entering");
+    // Set the final height once; only opacity changes during the reveal.
+    // Animating height forced layout on every frame and shifted the following cards.
+    if (!reducedMotion) {
+      opening = content.animate([{ opacity: 0 }, { opacity: 1 }], {
+        duration: 500, easing: "ease-out"
       });
+      briefingAnimations.set(card, opening);
     }
+    card.dispatchEvent(new CustomEvent("briefing:open", { bubbles: true }));
     visitedFiles.add(card.dataset.file);
     card.classList.add("is-visited");
     state.textContent = "확인 완료";
@@ -109,12 +106,12 @@ function scheduleBriefings() {
       if (!mobileBriefings.matches || handledBriefings.has(card) || !briefingInReadingZone(card)) return;
       handledBriefings.add(card);
       automaticBriefingOpening = true;
-      setCardOpen(card, true, true).finally(() => {
+      setCardOpen(card, true).finally(() => {
         automaticBriefingOpening = false;
         // Let each card finish opening before considering the next one.
         scheduleBriefings();
       });
-    }, 240);
+    }, 160);
   });
 }
 

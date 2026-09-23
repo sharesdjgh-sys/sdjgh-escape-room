@@ -8,6 +8,7 @@
   const source = new URL(validDeployment ? webAppUrl : "./registration/index.html", location.href);
   source.searchParams.set("channel", channel);
   let ready = false;
+  let started = false;
   let timer;
   let formWindow;
   let formOrigin;
@@ -55,20 +56,42 @@
       document.documentElement.classList.add("registration-confirming");
     }
   });
-  frame.src = source.href;
+  function startLoading() {
+    if (started) return;
+    started = true;
+    observer.disconnect();
+    // Assign src only when needed, then load even while the accordion is hidden.
+    frame.src = source.href;
+    timer = setTimeout(() => {
+      if (!ready) note.textContent = "신청서 연결이 지연되고 있습니다. 잠시만 기다려 주세요. 계속 열리지 않으면 페이지를 새로고침해 주세요.";
+    }, 20000);
+  }
+
   const observer = new IntersectionObserver((entries) => {
-    if (entries.some((entry) => entry.isIntersecting)) {
-      observer.disconnect();
-      if (!ready) timer = setTimeout(() => {
-        if (!ready) note.textContent = "신청서를 불러오지 못했습니다. 잠시 후 페이지를 새로고침해 주세요.";
-      }, 20000);
-    }
+    if (entries.some((entry) => entry.isIntersecting)) startLoading();
+  }, { rootMargin: "160px 0px" });
+  // This heading stays observable even when the form itself is hidden.
+  observer.observe(document.querySelector(".application-card .file-trigger"));
+
+  document.querySelector("#mission-files").addEventListener("briefing:open", startLoading);
+  document.querySelectorAll('#start-mission, a[href="#mission-files"], #application-shortcut').forEach((link) => {
+    link.addEventListener("click", startLoading);
   });
-  observer.observe(frame);
+
+  function preloadWhenIdle() {
+    const connection = navigator.connection;
+    if (connection?.saveData || /(^|-)2g$/.test(connection?.effectiveType || "")) return;
+    // Keep the initial images ahead of the external Google application.
+    if ("requestIdleCallback" in window) requestIdleCallback(startLoading, { timeout: 1500 });
+    else setTimeout(startLoading, 500);
+  }
+  if (document.readyState === "complete") preloadWhenIdle();
+  else window.addEventListener("load", preloadWhenIdle, { once: true });
 
   document.querySelectorAll(".registration-open").forEach((link) => {
     link.addEventListener("click", (event) => {
       event.preventDefault();
+      startLoading();
       const trigger = document.querySelector('[aria-controls="file-application"]');
       if (trigger.getAttribute("aria-expanded") !== "true") trigger.click();
       const destination = document.querySelector("#registration");

@@ -49,7 +49,7 @@ a { color: inherit; text-decoration: none; }
 
 .entry { position: relative; min-height: 920px; isolation: isolate; display: flex; justify-content: center; align-items: end; overflow: hidden; padding: 500px 24px 92px; background: #030914; }
 .entry::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(3,9,20,.35), transparent 15%, transparent 43%, rgba(3,9,20,.18) 56%, rgba(3,9,20,.85) 85%, var(--navy-900)); }
-.corridor { position: absolute; inset: 0; z-index: -2; overflow: hidden; background: url("./assets/mission-hero-v2.png") center top / auto 1020px no-repeat; mask-image: linear-gradient(90deg, transparent, black 24%, black 76%, transparent); }
+.corridor { position: absolute; inset: 0; z-index: -2; overflow: hidden; background: url("./assets/mission-hero.webp") center top / auto 1020px no-repeat; mask-image: linear-gradient(90deg, transparent, black 24%, black 76%, transparent); }
 .ceiling-lines, .locker, .vault-glow, .vault, .floor-grid { display: none; }
 .ceiling-lines { position: absolute; inset: 0 12% 45%; opacity: .28; background: repeating-linear-gradient(90deg, transparent 0 14%, rgba(33,167,184,.3) 14.2% 14.5%, transparent 14.7% 28%), linear-gradient(165deg, transparent 49.7%, rgba(22,229,243,.16) 50%, transparent 50.3%), linear-gradient(195deg, transparent 49.7%, rgba(22,229,243,.16) 50%, transparent 50.3%); }
 .locker { position: absolute; top: 15%; bottom: 8%; width: 36%; border: 1px solid rgba(63,181,196,.12); opacity: .58; background: repeating-linear-gradient(0deg, transparent 0 13.8%, rgba(40,139,155,.15) 14% 14.5%), repeating-linear-gradient(90deg, rgba(5,22,34,.7) 0 23%, rgba(43,132,143,.18) 23.5% 24%, rgba(5,22,34,.7) 24.5% 48%); }
@@ -120,7 +120,7 @@ h2 { margin: 0; font-size: clamp(43px, 8vw, 72px); line-height: .95; letter-spac
 .file-card.is-visited .file-state em { color: var(--cyan); }
 .file-content { overflow: hidden; }
 .file-content[hidden] { display: none; }
-.file-content.is-entering { animation: fileOpen .42s cubic-bezier(.16,1,.3,1); }
+
 .content-grid { display: grid; grid-template-columns: 80px 1fr; gap: 20px; padding: 8px 90px 36px 18px; }
 .content-kicker { margin: 6px 0 0; color: #668593; font-size: 8px; line-height: 1.6; letter-spacing: .1em; }
 .content-grid h3 { margin: 0 0 13px; font-size: 18px; }.content-grid p:not(.content-kicker) { max-width: 650px; margin: 0; color: var(--muted); line-height: 1.8; font-size: 14px; }
@@ -150,13 +150,15 @@ footer p { grid-row: 2; margin: 0; font-size: 11px; } footer small { grid-column
 
 .reveal { opacity: 0; transform: translateY(24px); transition: opacity .75s ease, transform .75s cubic-bezier(.16,1,.3,1); }.reveal.is-visible { opacity: 1; transform: translateY(0); }
 @keyframes accessText { 0%,100% { opacity: 0; } 25%,70% { opacity: 1; } }
-@keyframes fileOpen { from { opacity: 0; transform: translateY(-9px); } to { opacity: 1; transform: none; } }
+
 @keyframes blink { 50% { opacity: .25; } }
 @keyframes ping { to { transform: scale(1.65); opacity: 0; } }
 
 @media (max-width: 640px) {
+  body::before { display: none; }
+  .reveal { transform: none; transition: opacity .18s ease; transition-delay: 0ms !important; }
   .entry { min-height: 100svh; padding: clamp(300px, 82vw, 495px) 20px 76px; }
-  .corridor { background-size: auto max(720px, 155vw); mask-image: none; }
+  .corridor { background-image: url("./assets/mission-hero-mobile.webp"); background-size: auto max(720px, 155vw); mask-image: none; }
   .signal { display: none; }
   .hero-content { width: 100%; }
   .eyebrow { font-size: 10px; }

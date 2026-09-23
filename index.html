@@ -10,7 +10,8 @@
     <title>특급 요원의 침투 작전 | 서대전여자고등학교</title>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
     <link rel="stylesheet" href="style.css" />
-    <link rel="preload" as="image" href="./assets/mission-hero-v2.png" />
+    <link rel="preload" as="image" href="./assets/mission-hero-mobile.webp" type="image/webp" media="(max-width: 640px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="./assets/mission-hero.webp" type="image/webp" media="(min-width: 641px)" fetchpriority="high" />
     <script src="script.js" defer></script>
     <script src="registration-config.js" defer></script>
     <script src="registration-embed.js" defer></script>
@@ -39,7 +40,7 @@
         <div class="hero-content">
           <p class="eyebrow">서대전여자고등학교 방탈출 체험</p>
           <p class="agent-invitation">중3 여학생 전용 · 회차당 최대 4명</p>
-          <h1 id="hero-title" class="hero-title"><img src="./assets/mission-title-action.png" width="1774" height="887" decoding="async" fetchpriority="high" alt="특급 요원의 침투 작전" /></h1>
+          <h1 id="hero-title" class="hero-title"><picture><source media="(max-width: 640px)" srcset="./assets/mission-title-mobile.webp" type="image/webp" /><img src="./assets/mission-title.webp" width="1774" height="887" decoding="async" fetchpriority="high" alt="특급 요원의 침투 작전" /></picture></h1>
           <p class="hero-copy">학교 안에 숨겨진 단서, 함께 풀어갈 미션.<br />문 너머의 새로운 이야기가 시작됩니다.</p>
           <div class="hero-actions">
             <button class="button button-primary" id="start-mission" type="button">
@@ -140,7 +141,7 @@
                   <p>아래 지도에서 학교 위치를 확인해 주세요. 자세한 위치와 길찾기는 네이버 지도에서 볼 수 있습니다.</p>
                   <figure class="location-map">
                     <a class="location-map-preview" href="./assets/school-map.png" target="_blank" rel="noopener noreferrer" aria-label="학교 지도 크게 보기 (새 탭)">
-                      <img src="./assets/school-map.png" width="987" height="667" loading="lazy" decoding="async" alt="월평공원 동쪽, 도마초등학교 북서쪽에 표시된 서대전여자고등학교 위치" />
+                      <img src="./assets/school-map.webp" width="987" height="667" loading="lazy" decoding="async" alt="월평공원 동쪽, 도마초등학교 북서쪽에 표시된 서대전여자고등학교 위치" />
                     </a>
                     <figcaption><span>서대전여자고등학교 위치</span><a href="./assets/school-map.png" target="_blank" rel="noopener noreferrer">크게 보기 ↗</a></figcaption>
                   </figure>
@@ -173,7 +174,7 @@
                   <a class="button button-primary application-submit registration-open" href="#registration">참가 신청서 작성 <span aria-hidden="true">↓</span></a>
                   <section id="registration" class="registration-panel" tabindex="-1" aria-label="방탈출 체험 참가 신청서">
                     <p id="registration-connection" class="registration-connection" role="status">온라인 신청서를 준비하고 있습니다.</p>
-                    <iframe id="registration-frame" title="서대전여고 방탈출 체험 신청서" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                    <iframe id="registration-frame" title="서대전여고 방탈출 체험 신청서" loading="eager" referrerpolicy="strict-origin-when-cross-origin"></iframe>
                   </section>
                 </div>
               </div>
