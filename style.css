@@ -158,7 +158,7 @@ footer p { grid-row: 2; margin: 0; font-size: 11px; } footer small { grid-column
   body::before { display: none; }
   .reveal { transform: none; transition: opacity .18s ease; transition-delay: 0ms !important; }
   .entry { min-height: 100svh; padding: clamp(300px, 82vw, 495px) 20px 76px; }
-  .corridor { background-image: url("./assets/mission-hero-mobile.webp"); background-size: auto max(720px, 155vw); mask-image: none; }
+  .corridor { background-size: auto max(720px, 155vw); mask-image: none; }
   .signal { display: none; }
   .hero-content { width: 100%; }
   .eyebrow { font-size: 10px; }
