@@ -1,0 +1,9 @@
+# Local previews and temporary browser files
+/tmp/
+
+# Source references; the website uses copies in assets/
+/ref/
+
+# Unused original hero and image-generation notes
+/assets/hero-background.png
+/assets/*.prompt.md

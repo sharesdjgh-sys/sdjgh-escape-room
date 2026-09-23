@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#050d18" />
+    <meta name="description" content="서대전여자고등학교 방탈출 체험, 특급 요원의 침투 작전 안내 페이지" />
+    <meta property="og:title" content="특급 요원의 침투 작전" />
+    <meta property="og:description" content="학교 안에 숨겨진 비밀 작전 파일을 확인하세요." />
+    <title>특급 요원의 침투 작전 | 서대전여자고등학교</title>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preload" as="image" href="./assets/mission-hero-v2.png" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#mission-files">행사 안내로 바로 이동</a>
+
+    <header class="topbar" aria-label="상단 메뉴">
+      <a class="brand" href="#entry" aria-label="처음 화면으로">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span><b>SDJGH</b><small>FIELD OFFICE</small></span>
+      </a>
+      <button class="sound-toggle" type="button" aria-pressed="false" aria-label="작전음 켜기">
+        <span class="sound-icon" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="sound-label">SOUND OFF</span>
+      </button>
+    </header>
+
+    <main>
+      <section class="entry" id="entry" aria-labelledby="hero-title">
+        <div class="corridor" aria-hidden="true">
+          <div class="ceiling-lines"></div>
+          <div class="locker locker-left"></div>
+          <div class="locker locker-right"></div>
+          <div class="vault-glow"></div>
+          <div class="vault">
+            <span class="vault-ring"></span>
+            <span class="vault-hub"></span>
+            <span class="vault-bar vault-bar-a"></span>
+            <span class="vault-bar vault-bar-b"></span>
+          </div>
+          <div class="floor-grid"></div>
+        </div>
+
+        <div class="signal" aria-hidden="true"><span></span> SECURE CHANNEL / 01</div>
+
+        <div class="hero-content">
+          <p class="eyebrow">서대전여자고등학교 방탈출 체험</p>
+          <p class="agent-invitation">중3 여학생 전용 · 회차당 최대 4명</p>
+          <h1 id="hero-title"><span>특급 요원의</span><strong>침투 작전</strong></h1>
+          <p class="hero-copy">학교 안에 숨겨진 단서, 함께 풀어갈 미션.<br />문 너머의 새로운 이야기가 시작됩니다.</p>
+          <div class="hero-actions">
+            <button class="button button-primary" id="start-mission" type="button">
+              <span>작전 시작</span><b aria-hidden="true">→</b>
+            </button>
+            <a class="text-link" href="#mission-files">행사 안내 바로 보기 <span aria-hidden="true">↓</span></a>
+          </div>
+        </div>
+
+        <div class="hero-status" aria-label="접속 상태">
+          <span><i></i> 통신 보안 연결됨</span>
+          <span class="mono">ACCESS: GUEST</span>
+        </div>
+
+        <div class="door-transition" aria-hidden="true">
+          <div class="door-panel door-left"></div>
+          <div class="door-panel door-right"></div>
+          <p>ACCESS GRANTED</p>
+        </div>
+      </section>
+
+      <section class="mission-section" id="mission-files" aria-labelledby="files-title">
+        <div class="section-intro reveal">
+          <div>
+            <p class="section-code">MISSION ARCHIVE <span>/ 04 FILES</span></p>
+            <h2 id="files-title">작전 파일</h2>
+          </div>
+          <p>확인할 파일을 선택하세요.<br />순서와 관계없이 열람할 수 있습니다.</p>
+        </div>
+
+        <div class="progress-panel reveal" aria-live="polite">
+          <span>파일 확인 현황</span>
+          <div class="progress-track"><i id="progress-bar"></i></div>
+          <b><span id="opened-count">0</span> / 4</b>
+        </div>
+
+        <div class="file-list">
+          <article class="file-card reveal" data-file="briefing">
+            <button class="file-trigger" type="button" aria-expanded="false" aria-controls="file-briefing">
+              <span class="file-number">01</span>
+              <span class="file-title"><small>CLASSIFIED FILE</small><b>미션 브리핑</b></span>
+              <span class="file-state"><em>미확인</em><i aria-hidden="true"></i></span>
+            </button>
+            <div class="file-content" id="file-briefing" hidden>
+              <div class="content-grid">
+                <p class="content-kicker">OPERATION SUMMARY</p>
+                <div>
+                  <h3>캠퍼스 곳곳에서 펼쳐지는 특별 작전</h3>
+                  <p>학교를 함께 둘러보고, 팀원과 방탈출 미션을 해결한 뒤 저녁 식사와 교류의 시간을 갖습니다.</p>
+                  <ul class=program-list>
+                    <li><span>01</span><div><b>캠퍼스 투어</b><p>아름다운 우리 학교를 함께 걸어요.</p></div></li>
+                    <li><span>02</span><div><b>방탈출 「특급 요원의 침투 작전」</b><p>함께 풀어가는 특별한 미션입니다.</p></div></li>
+                    <li><span>03</span><div><b>저녁 식사</b><p>17:30~18:30 · 즐거운 교류의 시간</p></div></li>
+                  </ul>
+                  <dl><div><dt>참가 대상</dt><dd>중학교 3학년 여학생만 참여 가능</dd></div><div><dt>참가 인원</dt><dd>회차당 최대 4명</dd></div></dl>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="file-card reveal" data-file="schedule">
+            <button class="file-trigger" type="button" aria-expanded="false" aria-controls="file-schedule">
+              <span class="file-number">02</span>
+              <span class="file-title"><small>OPERATION TIME</small><b>작전 일정</b></span>
+              <span class="file-state"><em>미확인</em><i aria-hidden="true"></i></span>
+            </button>
+            <div class="file-content" id="file-schedule" hidden>
+              <div class="content-grid">
+                <p class="content-kicker">MISSION TIMELINE</p>
+                <div>
+                  <h3>10월 13일(화) ~ 15일(목)</h3>
+                  <p>총 6회 운영합니다. 참여할 회차의 날짜와 시간을 확인하세요.</p>
+                  <div class="schedule-table" role="table" aria-label="방탈출 체험 운영 일정">
+                    <div class="schedule-row schedule-head" role="row"><span>회차</span><span>날짜</span><span>시간</span></div>
+                    <div class="schedule-row" role="row"><b>01</b><span>10월 13일(화)</span><time>16:30~18:30</time></div>
+                    <div class="schedule-row" role="row"><b>02</b><span>10월 13일(화)</span><time>17:30~19:30</time></div>
+                    <div class="schedule-row" role="row"><b>03</b><span>10월 14일(수)</span><time>16:30~18:30</time></div>
+                    <div class="schedule-row" role="row"><b>04</b><span>10월 14일(수)</span><time>17:30~19:30</time></div>
+                    <div class="schedule-row" role="row"><b>05</b><span>10월 15일(목)</span><time>16:30~18:30</time></div>
+                    <div class="schedule-row" role="row"><b>06</b><span>10월 15일(목)</span><time>17:30~19:30</time></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="file-card reveal" data-file="location">
+            <button class="file-trigger" type="button" aria-expanded="false" aria-controls="file-location">
+              <span class="file-number">03</span>
+              <span class="file-title"><small>RENDEZVOUS POINT</small><b>집결 장소</b></span>
+              <span class="file-state"><em>미확인</em><i aria-hidden="true"></i></span>
+            </button>
+            <div class="file-content" id="file-location" hidden>
+              <div class="content-grid">
+                <p class="content-kicker">LOCATION DATA</p>
+                <div>
+                  <h3>서대전여자고등학교 일원</h3>
+                  <p>아래 지도에서 학교 위치를 확인해 주세요. 자세한 위치와 길찾기는 네이버 지도에서 볼 수 있습니다.</p>
+                  <figure class="location-map">
+                    <a class="location-map-preview" href="./assets/school-map.png" target="_blank" rel="noopener noreferrer" aria-label="학교 지도 크게 보기 (새 탭)">
+                      <img src="./assets/school-map.png" width="987" height="667" loading="lazy" decoding="async" alt="월평공원 동쪽, 도마초등학교 북서쪽에 표시된 서대전여자고등학교 위치" />
+                    </a>
+                    <figcaption><span>서대전여자고등학교 위치</span><a href="./assets/school-map.png" target="_blank" rel="noopener noreferrer">크게 보기 ↗</a></figcaption>
+                  </figure>
+                  <a class="button button-secondary location-map-link" href="https://naver.me/58jUXoYD" target="_blank" rel="noopener noreferrer" aria-label="네이버 지도에서 길찾기 (새 탭)">네이버 지도에서 길찾기 <span aria-hidden="true">↗</span></a>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="file-card application-card reveal" data-file="application">
+            <button class="file-trigger" type="button" aria-expanded="false" aria-controls="file-application">
+              <span class="file-number">04</span>
+              <span class="file-title"><small>AGENT REGISTRATION</small><b>참가 신청</b></span>
+              <span class="file-state"><em>미확인</em><i aria-hidden="true"></i></span>
+            </button>
+            <div class="file-content" id="file-application" hidden>
+              <div class="content-grid">
+                <p class="content-kicker">ENTRY PROTOCOL</p>
+                <div>
+                  <h3>요원 등록 안내</h3>
+                  <p>참가 대상과 일정을 확인한 뒤 아래 버튼을 눌러 신청서를 작성해 주세요.</p>
+                  <dl class="application-info">
+                    <div><dt>참가 대상</dt><dd>중학교 3학년 여학생만 참여 가능</dd></div>
+                    <div><dt>신청 기간</dt><dd>9월 28일(월) ~ 10월 7일(수) 16:00</dd></div>
+                    <div><dt>신청 방법</dt><dd>아래 참가 신청 버튼으로 온라인 신청서 작성</dd></div>
+                    <div><dt>선정 방법</dt><dd>추첨</dd></div>
+                    <div><dt>참가 인원</dt><dd>회차당 최대 4명</dd></div>
+                    <div><dt>선정 결과</dt><dd>10월 7일(수) 개별 통보</dd></div>
+                  </dl>
+                  <a class="button button-primary application-submit" href="https://forms.gle/qZUNWV48U43nsAHj8" target="_blank" rel="noopener noreferrer" aria-label="참가 신청하기 · Google Forms (새 탭)">참가 신청하기 <span aria-hidden="true">↗</span></a>
+                  <small class="button-helper">Google Forms 신청서가 새 탭에서 열립니다. 작성 후 제출해 주세요.</small>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="final-cta reveal" aria-labelledby="cta-title">
+        <p class="section-code">요원 모집 · 중학교 3학년 여학생</p>
+        <h2 id="cta-title">다음 요원은,<br /><span>바로 너.</span></h2>
+        <p>신청 기간 9월 28일(월) ~ 10월 7일(수) 16:00<br />중학교 3학년 여학생만 참여할 수 있습니다.<br />추첨으로 선정하며, 회차당 최대 4명까지 참여합니다.</p>
+        <a class="button button-secondary" id="application-shortcut" href="#file-application">참가 신청 안내 보기 <span aria-hidden="true">↑</span></a>
+        <a class="button button-primary application-submit" href="https://forms.gle/qZUNWV48U43nsAHj8" target="_blank" rel="noopener noreferrer" aria-label="참가 신청하기 · Google Forms (새 탭)">참가 신청하기 <span aria-hidden="true">↗</span></a>
+      </section>
+    </main>
+
+    <footer id="school-footer">
+      <div class="footer-brand"><img src="./assets/school-logo.png" width="269" height="43" loading="lazy" decoding="async" alt="서대전여자고등학교" /></div>
+      <p>본 페이지의 배경은 행사를 위한 연출 이미지입니다.</p>
+      <small>SDJGH ESCAPE MISSION</small>
+    </footer>
+  </body>
+</html>
