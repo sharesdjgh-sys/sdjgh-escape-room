@@ -54,30 +54,63 @@ startButton.addEventListener("click", () => {
   window.setTimeout(() => transition.classList.remove("is-active", "is-opening"), 1650);
 });
 
-cards.forEach((card) => {
+const mobileBriefings = window.matchMedia("(max-width: 640px)");
+const handledBriefings = new Set();
+let briefingFramePending = false;
+
+function setCardOpen(card, willOpen, withSound = false) {
   const trigger = card.querySelector(".file-trigger");
   const content = card.querySelector(".file-content");
   const state = card.querySelector(".file-state em");
+  trigger.setAttribute("aria-expanded", String(willOpen));
+  card.classList.toggle("is-open", willOpen);
+  content.hidden = !willOpen;
+  if (willOpen) {
+    content.classList.remove("is-entering");
+    requestAnimationFrame(() => content.classList.add("is-entering"));
+    visitedFiles.add(card.dataset.file);
+    card.classList.add("is-visited");
+    state.textContent = "확인 완료";
+    if (withSound) playTone(420 + visitedFiles.size * 35);
+    openedCount.textContent = visitedFiles.size;
+    progressBar.style.width = `${(visitedFiles.size / cards.length) * 100}%`;
+  } else if (withSound) {
+    playTone(280, 0.05, 0.02);
+  }
+}
 
+cards.forEach((card) => {
+  const trigger = card.querySelector(".file-trigger");
   trigger.addEventListener("click", () => {
-    const willOpen = trigger.getAttribute("aria-expanded") !== "true";
-    trigger.setAttribute("aria-expanded", String(willOpen));
-    card.classList.toggle("is-open", willOpen);
-    content.hidden = !willOpen;
-    if (willOpen) {
-      content.classList.remove("is-entering");
-      requestAnimationFrame(() => content.classList.add("is-entering"));
-      visitedFiles.add(card.dataset.file);
-      card.classList.add("is-visited");
-      state.textContent = "확인 완료";
-      playTone(420 + visitedFiles.size * 35);
-      openedCount.textContent = visitedFiles.size;
-      progressBar.style.width = `${(visitedFiles.size / cards.length) * 100}%`;
-    } else {
-      playTone(280, 0.05, 0.02);
-    }
+    handledBriefings.add(card);
+    setCardOpen(card, trigger.getAttribute("aria-expanded") !== "true", true);
+    scheduleBriefings();
   });
 });
+
+function scheduleBriefings() {
+  if (!mobileBriefings.matches || briefingFramePending) return;
+  briefingFramePending = true;
+  requestAnimationFrame(() => {
+    briefingFramePending = false;
+    if (!mobileBriefings.matches) return;
+    for (const card of cards) {
+      if (handledBriefings.has(card)) continue;
+      const bounds = card.querySelector(".file-trigger").getBoundingClientRect();
+      if (bounds.top >= window.innerHeight * 0.8 || bounds.bottom <= 0) continue;
+      handledBriefings.add(card);
+      setCardOpen(card, true);
+      // Recheck layout next frame: opening one card moves the following cards.
+      scheduleBriefings();
+      break;
+    }
+  });
+}
+
+window.addEventListener("scroll", scheduleBriefings, { passive: true });
+window.addEventListener("resize", scheduleBriefings, { passive: true });
+mobileBriefings.addEventListener("change", scheduleBriefings);
+scheduleBriefings();
 
 const revealObserver = new IntersectionObserver(
   (entries) => {

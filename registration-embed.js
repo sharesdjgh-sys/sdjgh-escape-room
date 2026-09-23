@@ -9,13 +9,34 @@
   source.searchParams.set("channel", channel);
   let ready = false;
   let timer;
+  let formWindow;
+  let formOrigin;
+  let completed = false;
+  const successDialog = document.querySelector("#registration-success");
+
+  function revealReceipt() {
+    const trigger = document.querySelector('[aria-controls="file-application"]');
+    if (trigger.getAttribute("aria-expanded") !== "true") trigger.click();
+    const destination = document.querySelector("#registration");
+    destination.scrollIntoView({ behavior: "instant", block: "start" });
+    destination.focus({ preventScroll: true });
+  }
+
+  successDialog.addEventListener("close", () => {
+    document.documentElement.classList.remove("registration-confirming");
+    revealReceipt();
+    formWindow?.postMessage({ type: "escape-registration:focus-receipt", channel }, formOrigin === "null" ? "*" : formOrigin);
+  });
 
   window.addEventListener("message", (event) => {
     const sameSite = event.origin === location.origin && event.source === frame.contentWindow;
     const googleHost = /^https:\/\/(?:script\.google\.com|script\.googleusercontent\.com|[a-z0-9-]+-script\.googleusercontent\.com)$/.test(event.origin);
     if (!event.source || event.data?.channel !== channel ||
-        !(validDeployment ? googleHost : sameSite)) return;
+        !(validDeployment ? googleHost : sameSite) || (formWindow && event.source !== formWindow)) return;
     if (event.data.type === "escape-registration:ready") {
+      if (completed) return;
+      formWindow = event.source;
+      formOrigin = event.origin;
       ready = true;
       clearTimeout(timer);
       note.textContent = validDeployment
@@ -25,6 +46,13 @@
     }
     if (event.data.type === "escape-registration:resize" && Number.isFinite(event.data.height)) {
       frame.style.height = Math.max(340, Math.min(3500, event.data.height)) + "px";
+    }
+    if (event.data.type === "escape-registration:complete" && ready && !completed) {
+      completed = true;
+      note.textContent = "신청이 정상적으로 접수되었습니다. 아래 접수번호를 보관해 주세요.";
+      revealReceipt();
+      successDialog.showModal();
+      document.documentElement.classList.add("registration-confirming");
     }
   });
   frame.src = source.href;

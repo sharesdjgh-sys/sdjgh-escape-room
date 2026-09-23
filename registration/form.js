@@ -50,9 +50,14 @@
 
   window.addEventListener("message", (event) => {
     if (event.source !== window.top || event.origin !== parentOrigin ||
-        event.data?.type !== "escape-registration:parent" || event.data.channel !== channel) return;
-    parentVerified = true;
-    refreshAvailability();
+        event.data?.channel !== channel) return;
+    if (event.data.type === "escape-registration:parent") {
+      parentVerified = true;
+      refreshAvailability();
+    }
+    if (event.data.type === "escape-registration:focus-receipt" && complete) {
+      receipt.focus({ preventScroll: true });
+    }
   });
   if (channel && window.top !== window) {
     window.top.postMessage({ type: "escape-registration:ready", channel }, parentOrigin === "null" ? "*" : parentOrigin);
@@ -95,6 +100,7 @@
       complete = true;
       form.hidden = true;
       status.hidden = true;
+      document.querySelector(".form-header").hidden = true;
       document.querySelector("#receipt-id").textContent = result.receiptId;
       document.querySelector("#receipt-session").textContent = "희망 회차: " + current.payload.session + "회차";
       receipt.hidden = false;
@@ -102,6 +108,14 @@
       form.reset();
       submission = null;
       reportHeight();
+      requestAnimationFrame(() => {
+        if (window.top !== window && channel && parentVerified) {
+          // Send only completion status, never applicant data or the receipt ID.
+          window.top.postMessage({ type: "escape-registration:complete", channel }, parentOrigin === "null" ? "*" : parentOrigin);
+        } else {
+          receipt.scrollIntoView({ behavior: "instant", block: "start" });
+        }
+      });
       return;
     }
     if (current.uncertain) { unknownOutcome(current); return; }
