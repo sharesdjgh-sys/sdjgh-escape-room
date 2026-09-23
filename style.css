@@ -160,10 +160,14 @@ dl { margin: 24px 0 0; border-top: 1px solid rgba(255,255,255,.08); } dl div { d
 .final-cta::after { content: "04"; position: absolute; right: max(4vw, calc((100vw - var(--max-width)) / 2)); top: 50%; transform: translateY(-50%); color: rgba(22,229,243,.035); font-size: clamp(220px, 36vw, 480px); font-weight: 900; line-height: 1; letter-spacing: -.1em; }
 .final-cta > * { position: relative; z-index: 1; }.final-cta h2 { font-size: clamp(40px, 8vw, 76px); }.final-cta > p:not(.section-code) { max-width: 500px; margin: 25px 0 32px; color: var(--muted); line-height: 1.7; }.button-secondary { border: 1px solid var(--cyan); color: var(--cyan); background: rgba(22,229,243,.03); }.button-secondary:hover { color: var(--navy-950); background: var(--cyan); }
 footer { min-height: 180px; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 10px 40px; padding: 45px max(24px, calc((100vw - var(--max-width)) / 2)); border-top: 1px solid rgba(255,255,255,.06); color: #75909e; background: var(--navy-950); }
-.footer-brand { position: relative; width: fit-content; max-width: 100%; min-width: 0; padding: 0; background: transparent; }
-.footer-brand img { display: block; width: 269px; max-width: 100%; height: auto; }
-/* Recolor only the wordmark; preserve the original crest, blue motif and underline. */
-.footer-brand::after { content: ""; position: absolute; inset: 0; background: url("./assets/school-logo.png") center / 100% 100% no-repeat; filter: brightness(0) invert(1); clip-path: inset(0 12% 18% 16%); pointer-events: none; }
+.footer-brand { position: relative; width: 244px; max-width: 100%; min-width: 0; padding: 0; background: transparent; container-type: inline-size; }
+/* Preserve the emblem, underline and flags; render both text lines as live text. */
+.footer-brand img { display: block; width: 100%; height: auto; clip-path: polygon(0% 0%, 15.8% 0%, 15.8% 83%, 83% 83%, 83% 0%, 100% 0%, 100% 100%, 0% 100%); }
+.footer-school-motto { position: absolute; left: 15.8%; top: -2%; width: 67.2%; color: #d6e1e8; text-align: center; font-size: 9px; font-size: 3.69cqw; font-weight: 500; line-height: 1.35; letter-spacing: -.025em; white-space: nowrap; }
+.motto-character { color: #ffac65; }
+.motto-ability { color: #9bda86; }
+.motto-future { color: #77c9ff; }
+.footer-school-name { position: absolute; left: 15.8%; top: 30%; width: 67.2%; height: 53%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; font-size: 7.38cqw; font-weight: 800; line-height: 1; letter-spacing: -.045em; white-space: nowrap; }
 footer p { grid-row: 2; margin: 0; font-size: 11px; } footer small { grid-column: 2; grid-row: 1 / 3; font-size: 9px; letter-spacing: .13em; }
 
 .reveal { opacity: 0; transform: translateY(24px); transition: opacity .75s ease, transform .75s cubic-bezier(.16,1,.3,1); }.reveal.is-visible { opacity: 1; transform: translateY(0); }
@@ -190,7 +194,7 @@ footer p { grid-row: 2; margin: 0; font-size: 11px; } footer small { grid-column
   .mission-section { padding: 82px 16px 90px; }.section-intro { grid-template-columns: 1fr; gap: 20px; }.section-intro > p { justify-self: start; font-size: 13px; }.progress-panel { gap: 10px; padding-inline: 12px; }.progress-panel > span { font-size: 10px; }
   .file-card:nth-child(even) { margin-left: 0; }.file-trigger { grid-template-columns: 37px 1fr auto; min-height: 94px; gap: 10px; padding: 18px 10px 18px 8px; }.file-title b { font-size: 20px; }.file-state em { display: none; }.file-state i { width: 32px; height: 32px; }.content-grid { grid-template-columns: 37px 1fr; gap: 10px; padding: 5px 14px 30px 8px; }.content-kicker { writing-mode: vertical-rl; font-size: 7px; }.content-grid p:not(.content-kicker) { font-size: 13px; }.map-placeholder { height: 130px; }
   .final-cta { min-height: 500px; padding: 80px 22px; }.final-cta::after { right: -28px; }.final-cta h2 { font-size: 42px; }
-  footer { grid-template-columns: 1fr; padding: 38px 22px; }.footer-brand, footer p, footer small { grid-column: 1; grid-row: auto; } footer small { margin-top: 20px; }
+  footer { grid-template-columns: minmax(0, 1fr); padding: 38px 22px; }.footer-brand, footer p, footer small { grid-column: 1; grid-row: auto; } footer small { margin-top: 20px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -212,6 +216,15 @@ footer p { grid-row: 2; margin: 0; font-size: 11px; } footer small { grid-column
 .application-info { max-width:680px; }
 .application-info div { grid-template-columns:105px 1fr; }
 .button-helper { display:block; margin-top:10px; color:#698492; font-size:10px; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+#file-application .content-grid > div { min-width: 0; }
+.registration-panel { margin-top: 28px; border: 1px solid var(--line); background: #071827; scroll-margin-top: 20px; }
+.content-grid .registration-connection { padding: 14px 18px; border-bottom: 1px solid var(--line); font-size: 12px !important; }
+#registration-frame { display: block; width: 100%; height: 1300px; border: 0; background: #071827; }
+@media (max-width: 640px) {
+  #file-application .content-grid { grid-template-columns: minmax(0, 1fr); gap: 12px; padding: 5px 12px 28px; }
+  #file-application .content-kicker { writing-mode: horizontal-tb; }
+}
 .final-cta h2 span { color: var(--lime); }
 .application-submit { margin-top: 22px; min-width: 0; max-width: 100%; padding: 16px 24px; font-size: 16px; }
 .corridor { left: 50%; right: auto; width: min(100%, 765px); transform: translateX(-50%); mask-image: linear-gradient(90deg, transparent, black 16%, black 84%, transparent); }

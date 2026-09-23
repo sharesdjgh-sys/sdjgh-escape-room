@@ -1,0 +1,164 @@
+<script>
+(() => {
+  "use strict";
+  const form = document.querySelector("#application-form");
+  const submit = document.querySelector("#submit-application");
+  const status = document.querySelector("#availability");
+  const error = document.querySelector("#form-error");
+  const receipt = document.querySelector("#receipt");
+  const config = window.REGISTRATION_BOOTSTRAP || null;
+  const isLive = Boolean(config && window.google?.script?.run);
+  const channel = config?.channel || new URLSearchParams(location.search).get("channel");
+  const parentOrigin = config?.siteOrigin || location.origin;
+  let parentVerified = window.top === window;
+  let inFlight = false;
+  let complete = false;
+  let submission = null;
+  let resizeQueued = false;
+  const controls = [...form.querySelectorAll("input")];
+
+  function reportHeight() {
+    if (!channel || window.top === window || resizeQueued) return;
+    resizeQueued = true;
+    requestAnimationFrame(() => {
+      resizeQueued = false;
+      window.top.postMessage({
+        type: "escape-registration:resize",
+        channel,
+        height: Math.ceil(document.querySelector(".registration").getBoundingClientRect().height) + 12
+      }, parentOrigin === "null" ? "*" : parentOrigin);
+    });
+  }
+
+  function refreshAvailability() {
+    if (complete) return;
+    const allowed = isLive && config.accepting && parentVerified;
+    submit.disabled = !allowed || inFlight;
+    submit.querySelector("span").textContent = inFlight ? "접수 내용을 저장하고 있습니다…" : allowed ? "참가 신청서 제출" : "온라인 접수 준비 중";
+    if (!isLive) {
+      status.textContent = "신청서 미리보기입니다. 입력 항목을 살펴볼 수 있으며, 아직 제출되거나 저장되지는 않습니다.";
+    } else if (!config.accepting) {
+      status.textContent = config.message;
+      submit.querySelector("span").textContent = "현재 접수할 수 없습니다";
+    } else if (!parentVerified) {
+      status.textContent = "공식 홈페이지와 연결을 확인하고 있습니다. 잠시 후에도 이 안내가 보이면 홈페이지를 새로 열어 주세요.";
+    } else {
+      status.textContent = config.message;
+      if (!config.accepting) submit.querySelector("span").textContent = "현재 접수할 수 없습니다";
+    }
+    reportHeight();
+  }
+
+  window.addEventListener("message", (event) => {
+    if (event.source !== window.top || event.origin !== parentOrigin ||
+        event.data?.type !== "escape-registration:parent" || event.data.channel !== channel) return;
+    parentVerified = true;
+    refreshAvailability();
+  });
+  if (channel && window.top !== window) {
+    window.top.postMessage({ type: "escape-registration:ready", channel }, parentOrigin === "null" ? "*" : parentOrigin);
+  }
+  if (config?.retentionText) document.querySelector("#retention-text").textContent = config.retentionText;
+
+  document.querySelector("#phone-number").addEventListener("input", (event) => {
+    const digits = event.target.value.replace(/\D/g, "").slice(0, 11);
+    event.target.value = digits.length > 7 ? digits.slice(0, 3) + "-" + digits.slice(3, 7) + "-" + digits.slice(7)
+      : digits.length > 3 ? digits.slice(0, 3) + "-" + digits.slice(3) : digits;
+  });
+  document.querySelector("#student-number").addEventListener("input", (event) => {
+    event.target.value = event.target.value.replace(/\D/g, "").slice(0, 5);
+  });
+
+  function showError(message) {
+    error.textContent = message;
+    error.hidden = false;
+    reportHeight();
+  }
+
+  function setPending(pending) {
+    inFlight = pending;
+    form.setAttribute("aria-busy", String(pending));
+    // After an uncertain response, keep the submitted values fixed for a safe retry.
+    controls.forEach((input) => { input.disabled = pending || Boolean(submission?.uncertain); });
+    refreshAvailability();
+  }
+
+  function newRequestId() {
+    if (crypto.randomUUID) return crypto.randomUUID();
+    return Array.from(crypto.getRandomValues(new Uint8Array(24)), (n) => n.toString(16).padStart(2, "0")).join("");
+  }
+
+  function finish(result, current) {
+    if (complete || submission !== current) return;
+    clearTimeout(current.timeout);
+    if (result?.uncertain) { unknownOutcome(current); return; }
+    if (result?.ok === true && typeof result.receiptId === "string" && /^SDJGH-[0-9]{8}-[A-F0-9]{8}$/.test(result.receiptId)) {
+      complete = true;
+      form.hidden = true;
+      status.hidden = true;
+      document.querySelector("#receipt-id").textContent = result.receiptId;
+      document.querySelector("#receipt-session").textContent = "희망 회차: " + current.payload.session + "회차";
+      receipt.hidden = false;
+      receipt.focus({ preventScroll: true });
+      form.reset();
+      submission = null;
+      reportHeight();
+      return;
+    }
+    if (current.uncertain) { unknownOutcome(current); return; }
+    submission = null;
+    setPending(false);
+    showError(result?.message || "접수하지 못했습니다. 잠시 후 다시 시도해 주세요.");
+  }
+
+  function unknownOutcome(current) {
+    if (complete || submission !== current) return;
+    clearTimeout(current.timeout);
+    current.uncertain = true;
+    setPending(false);
+    showError("접수 결과를 아직 확인하지 못했습니다. 같은 내용으로 다시 제출해 주세요. 이미 저장되었다면 같은 접수번호를 안내합니다.");
+    submit.querySelector("span").textContent = "접수 결과 다시 확인";
+  }
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (!isLive || !parentVerified || !config.accepting || inFlight || complete) return;
+    error.hidden = true;
+    if (!submission) {
+      if (!form.reportValidity()) return;
+      const values = new FormData(form);
+      submission = {
+        payload: {
+          requestId: newRequestId(),
+          name: values.get("name").trim(),
+          school: values.get("school").trim(),
+          studentNumber: values.get("studentNumber"),
+          phone: values.get("phone"),
+          session: values.get("session"),
+          eligible: values.get("eligible") === "on",
+          privacyConsent: values.get("privacyConsent") === "on",
+          privacyVersion: config.privacyVersion,
+          website: values.get("website")
+        },
+        uncertain: false
+      };
+    }
+    const current = submission;
+    current.attempt = (current.attempt || 0) + 1;
+    const attempt = current.attempt;
+    setPending(true);
+    current.timeout = setTimeout(() => unknownOutcome(current), 45000);
+    google.script.run
+      .withSuccessHandler((result) => {
+        if (result?.ok || current.attempt === attempt) finish(result, current);
+      })
+      .withFailureHandler(() => {
+        if (current.attempt === attempt) unknownOutcome(current);
+      })
+      .submitApplication(current.payload);
+  });
+  new ResizeObserver(reportHeight).observe(document.querySelector(".registration"));
+  refreshAvailability();
+})();
+
+</script>

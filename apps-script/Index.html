@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>서대전여고 방탈출 체험 신청서</title>
+  <?!= include_('Styles'); ?>
+  <script>window.REGISTRATION_BOOTSTRAP = <?!= bootstrap ?>;</script>
+</head>
+<body>
+  <main class="registration">
+    <header class="form-header">
+      <p class="eyebrow">AGENT APPLICATION / 2026</p>
+      <h1>요원 지원서</h1>
+      <p>서대전여고 방탈출 체험 신청서<br>중학교 3학년 여학생만 신청할 수 있습니다.</p>
+      <span class="capacity">회차당 최대 4명 · 추첨 선정</span>
+    </header>
+
+    <p class="notice" id="availability" role="status">신청 안내를 확인하고 있습니다.</p>
+    <form id="application-form" aria-describedby="availability" novalidate>
+      <p class="required-note">모든 항목은 필수입니다.</p>
+      <div class="fields">
+        <div class="field">
+          <label for="applicant-name">이름</label>
+          <input id="applicant-name" name="name" type="text" autocomplete="name" maxlength="40" required placeholder="이름을 입력하세요">
+        </div>
+        <div class="field">
+          <label for="middle-school">재학 중학교</label>
+          <input id="middle-school" name="school" type="text" autocomplete="off" maxlength="60" required placeholder="예: ○○중학교">
+        </div>
+        <div class="field">
+          <label for="student-number">현재 학번</label>
+          <input id="student-number" name="studentNumber" type="text" inputmode="numeric" autocomplete="off" pattern="3[0-9]{4}" minlength="5" maxlength="5" required placeholder="예: 30115" aria-describedby="student-help">
+          <small id="student-help">3학년 1반 15번 → 30115</small>
+        </div>
+        <div class="field">
+          <label for="phone-number">연락용 전화번호</label>
+          <input id="phone-number" name="phone" type="tel" inputmode="tel" autocomplete="tel" pattern="010-[0-9]{4}-[0-9]{4}" maxlength="13" required placeholder="010-1234-5678" aria-describedby="phone-help">
+          <small id="phone-help">선정 결과를 안내받을 번호를 입력하세요.</small>
+        </div>
+      </div>
+
+      <fieldset class="sessions">
+        <legend>희망 회차 <span>하나를 선택해 주세요.</span></legend>
+        <div class="session-grid">
+          <label class="session"><input type="radio" name="session" value="1" required><span><b>1회차</b><span>10월 13일(화)</span><time>16:30–18:30</time></span></label>
+          <label class="session"><input type="radio" name="session" value="2"><span><b>2회차</b><span>10월 13일(화)</span><time>17:30–19:30</time></span></label>
+          <label class="session"><input type="radio" name="session" value="3"><span><b>3회차</b><span>10월 14일(수)</span><time>16:30–18:30</time></span></label>
+          <label class="session"><input type="radio" name="session" value="4"><span><b>4회차</b><span>10월 14일(수)</span><time>17:30–19:30</time></span></label>
+          <label class="session"><input type="radio" name="session" value="5"><span><b>5회차</b><span>10월 15일(목)</span><time>16:30–18:30</time></span></label>
+          <label class="session"><input type="radio" name="session" value="6"><span><b>6회차</b><span>10월 15일(목)</span><time>17:30–19:30</time></span></label>
+        </div>
+      </fieldset>
+
+      <label class="check"><input type="checkbox" name="eligible" required><span>현재 중학교 3학년 여학생입니다.</span></label>
+      <details class="privacy">
+        <summary>개인정보 수집·이용 안내</summary>
+        <dl>
+          <div><dt>수집·이용 주체</dt><dd>서대전여자고등학교</dd></div>
+          <div><dt>목적</dt><dd>방탈출 체험 참가 신청 접수, 추첨, 선정 결과 연락 및 참가자 확인</dd></div>
+          <div><dt>수집 항목</dt><dd>이름, 재학 중학교, 학번, 연락용 전화번호, 희망 회차, 참가 자격 확인, 동의 여부 및 접수 일시</dd></div>
+          <div><dt>보유·이용 기간</dt><dd id="retention-text">학교의 보유 기간을 확인한 후 안내합니다.</dd></div>
+          <div><dt>동의 거부</dt><dd>동의를 거부할 수 있으나, 동의하지 않으면 본 신청서를 통한 접수가 어렵습니다.</dd></div>
+        </dl>
+      </details>
+      <label class="check"><input type="checkbox" name="privacyConsent" required><span>개인정보 수집·이용 안내를 읽었으며 동의합니다.</span></label>
+      <div class="honeypot" aria-hidden="true"><label for="website">이 칸은 비워 주세요.</label><input id="website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+      <p id="form-error" class="error" role="alert" hidden></p>
+      <button id="submit-application" type="submit" disabled><span>온라인 접수 준비 중</span><span aria-hidden="true">→</span></button>
+      <p class="submit-note">신청 접수는 참가 확정이 아닙니다.<br>선정 결과는 10월 7일(수) 개별 통보합니다.</p>
+    </form>
+
+    <section id="receipt" class="receipt" tabindex="-1" aria-labelledby="receipt-title" hidden>
+      <p class="eyebrow">APPLICATION RECEIVED</p>
+      <h2 id="receipt-title">신청이 접수되었습니다.</h2>
+      <p>접수번호 <strong id="receipt-id"></strong></p>
+      <p id="receipt-session"></p>
+      <p>참가 확정은 추첨 후 개별 안내합니다.<br>선정 결과는 10월 7일(수)에 연락드립니다.</p>
+      <p class="receipt-tip">이 화면의 접수번호를 따로 보관해 주세요.</p>
+    </section>
+    <noscript><p class="notice">신청서를 사용하려면 브라우저의 JavaScript를 켜 주세요.</p></noscript>
+  </main>
+<?!= include_('Client'); ?>
+</body>
+</html>

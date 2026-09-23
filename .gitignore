@@ -6,4 +6,6 @@
 
 # Unused original hero and image-generation notes
 /assets/hero-background.png
+/assets/school-logo.png
+/assets/school-logo-v2.png
 /assets/*.prompt.md
