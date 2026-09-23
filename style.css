@@ -154,9 +154,14 @@ footer p { grid-row: 2; margin: 0; font-size: 11px; } footer small { grid-column
 @keyframes blink { 50% { opacity: .25; } }
 @keyframes ping { to { transform: scale(1.65); opacity: 0; } }
 
+/* Keep touch-screen reveals steady while cards open in the reading area. */
+@media (max-width: 1024px), (any-pointer: coarse) {
+  .file-card:nth-child(even) { margin-left: 0; }
+  .reveal { transform: none; transition: opacity .18s ease; transition-delay: 0ms !important; }
+}
+
 @media (max-width: 640px) {
   body::before { display: none; }
-  .reveal { transform: none; transition: opacity .18s ease; transition-delay: 0ms !important; }
   .entry { min-height: 100svh; padding: clamp(300px, 82vw, 495px) 20px 76px; }
   .corridor { background-size: auto max(720px, 155vw); mask-image: none; }
   .signal { display: none; }
@@ -170,7 +175,7 @@ footer p { grid-row: 2; margin: 0; font-size: 11px; } footer small { grid-column
   .hero-status { left: 22px; right: 22px; }
   .hero-status .mono { display: none; }
   .mission-section { padding: 82px 16px 90px; }.section-intro { grid-template-columns: 1fr; gap: 20px; }.section-intro > p { justify-self: start; font-size: 13px; }.progress-panel { gap: 10px; padding-inline: 12px; }.progress-panel > span { font-size: 10px; }
-  .file-card:nth-child(even) { margin-left: 0; }.file-trigger { grid-template-columns: 37px 1fr auto; min-height: 94px; gap: 10px; padding: 18px 10px 18px 8px; }.file-title b { font-size: 20px; }.file-state em { display: none; }.file-state i { width: 32px; height: 32px; }.content-grid { grid-template-columns: 37px 1fr; gap: 10px; padding: 5px 14px 30px 8px; }.content-kicker { writing-mode: vertical-rl; font-size: 7px; }.content-grid p:not(.content-kicker) { font-size: 13px; }.map-placeholder { height: 130px; }
+  .file-trigger { grid-template-columns: 37px 1fr auto; min-height: 94px; gap: 10px; padding: 18px 10px 18px 8px; }.file-title b { font-size: 20px; }.file-state em { display: none; }.file-state i { width: 32px; height: 32px; }.content-grid { grid-template-columns: 37px 1fr; gap: 10px; padding: 5px 14px 30px 8px; }.content-kicker { writing-mode: vertical-rl; font-size: 7px; }.content-grid p:not(.content-kicker) { font-size: 13px; }.map-placeholder { height: 130px; }
   .final-cta { min-height: 500px; padding: 80px 22px; }.final-cta::after { right: -28px; }.final-cta h2 { font-size: 42px; }
   footer { grid-template-columns: minmax(0, 1fr); padding: 38px 22px; }.footer-brand, footer p, footer small { grid-column: 1; grid-row: auto; } footer small { margin-top: 20px; }
 }

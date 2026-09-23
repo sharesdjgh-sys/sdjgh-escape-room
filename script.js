@@ -27,7 +27,8 @@ startButton.addEventListener("click", () => {
   window.setTimeout(() => transition.classList.remove("is-active", "is-opening"), 1650);
 });
 
-const mobileBriefings = window.matchMedia("(max-width: 640px)");
+// Include wide tablets and foldables even in landscape or with a mouse attached.
+const automaticBriefingsMedia = window.matchMedia("(max-width: 1024px), (any-pointer: coarse)");
 const handledBriefings = new Set();
 let briefingFramePending = false;
 let pendingBriefing = null;
@@ -87,7 +88,7 @@ function briefingInReadingZone(card) {
 }
 
 function scheduleBriefings() {
-  if (!mobileBriefings.matches) {
+  if (!automaticBriefingsMedia.matches) {
     cancelPendingBriefing();
     return;
   }
@@ -95,7 +96,7 @@ function scheduleBriefings() {
   briefingFramePending = true;
   requestAnimationFrame(() => {
     briefingFramePending = false;
-    if (!mobileBriefings.matches || automaticBriefingOpening) return;
+    if (!automaticBriefingsMedia.matches || automaticBriefingOpening) return;
     const card = cards.find((candidate) => !handledBriefings.has(candidate) && briefingInReadingZone(candidate));
     if (card === pendingBriefing) return;
     cancelPendingBriefing();
@@ -103,7 +104,7 @@ function scheduleBriefings() {
     pendingBriefing = card;
     briefingDelay = window.setTimeout(() => {
       pendingBriefing = null;
-      if (!mobileBriefings.matches || handledBriefings.has(card) || !briefingInReadingZone(card)) return;
+      if (!automaticBriefingsMedia.matches || handledBriefings.has(card) || !briefingInReadingZone(card)) return;
       handledBriefings.add(card);
       automaticBriefingOpening = true;
       setCardOpen(card, true).finally(() => {
@@ -117,7 +118,7 @@ function scheduleBriefings() {
 
 window.addEventListener("scroll", scheduleBriefings, { passive: true });
 window.addEventListener("resize", scheduleBriefings, { passive: true });
-mobileBriefings.addEventListener("change", scheduleBriefings);
+automaticBriefingsMedia.addEventListener("change", scheduleBriefings);
 scheduleBriefings();
 
 const revealObserver = new IntersectionObserver(
