@@ -50,7 +50,7 @@ function setCardOpen(card, willOpen, automatic = false) {
       opening = content.animate([
         { height: "0px", opacity: 0, transform: "translateY(-8px)" },
         { height: content.scrollHeight + "px", opacity: 1, transform: "translateY(0)" }
-      ], { duration: 650, easing: "cubic-bezier(.22,.68,0,1)" });
+      ], { duration: 1200, easing: "cubic-bezier(.45,0,.55,1)" });
       briefingAnimations.set(card, opening);
     } else if (!reducedMotion) {
       requestAnimationFrame(() => {
