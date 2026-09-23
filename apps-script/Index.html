@@ -40,15 +40,16 @@
         </div>
       </div>
 
-      <fieldset class="sessions">
-        <legend>희망 회차 <span>하나를 선택해 주세요.</span></legend>
+      <fieldset class="sessions" aria-describedby="session-help">
+        <legend>희망 회차 <span>복수 선택 가능</span></legend>
+        <p id="session-help" class="session-help">참여 가능한 회차를 모두 선택해 주세요. 최소 1개 이상 선택해야 합니다.</p>
         <div class="session-grid">
-          <label class="session"><input type="radio" name="session" value="1" required><span><b>1회차</b><span>10월 13일(화)</span><time>16:30–18:30</time></span></label>
-          <label class="session"><input type="radio" name="session" value="2"><span><b>2회차</b><span>10월 13일(화)</span><time>17:30–19:30</time></span></label>
-          <label class="session"><input type="radio" name="session" value="3"><span><b>3회차</b><span>10월 14일(수)</span><time>16:30–18:30</time></span></label>
-          <label class="session"><input type="radio" name="session" value="4"><span><b>4회차</b><span>10월 14일(수)</span><time>17:30–19:30</time></span></label>
-          <label class="session"><input type="radio" name="session" value="5"><span><b>5회차</b><span>10월 15일(목)</span><time>16:30–18:30</time></span></label>
-          <label class="session"><input type="radio" name="session" value="6"><span><b>6회차</b><span>10월 15일(목)</span><time>17:30–19:30</time></span></label>
+          <label class="session"><input type="checkbox" name="sessions" value="1"><span><b>1회차</b><span>10월 13일(화)</span><time>16:30–18:30</time></span></label>
+          <label class="session"><input type="checkbox" name="sessions" value="2"><span><b>2회차</b><span>10월 13일(화)</span><time>17:30–19:30</time></span></label>
+          <label class="session"><input type="checkbox" name="sessions" value="3"><span><b>3회차</b><span>10월 14일(수)</span><time>16:30–18:30</time></span></label>
+          <label class="session"><input type="checkbox" name="sessions" value="4"><span><b>4회차</b><span>10월 14일(수)</span><time>17:30–19:30</time></span></label>
+          <label class="session"><input type="checkbox" name="sessions" value="5"><span><b>5회차</b><span>10월 15일(목)</span><time>16:30–18:30</time></span></label>
+          <label class="session"><input type="checkbox" name="sessions" value="6"><span><b>6회차</b><span>10월 15일(목)</span><time>17:30–19:30</time></span></label>
         </div>
       </fieldset>
 

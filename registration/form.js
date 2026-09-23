@@ -15,6 +15,13 @@
   let submission = null;
   let resizeQueued = false;
   const controls = [...form.querySelectorAll("input")];
+  const sessionInputs = [...form.querySelectorAll('[name="sessions"]')];
+
+  function validateSessions() {
+    const selected = sessionInputs.some((input) => input.checked);
+    sessionInputs[0].setCustomValidity(selected ? "" : "희망 회차를 하나 이상 선택해 주세요.");
+  }
+  sessionInputs.forEach((input) => input.addEventListener("change", validateSessions));
 
   function reportHeight() {
     if (!channel || window.top === window || resizeQueued) return;
@@ -102,7 +109,7 @@
       status.hidden = true;
       document.querySelector(".form-header").hidden = true;
       document.querySelector("#receipt-id").textContent = result.receiptId;
-      document.querySelector("#receipt-session").textContent = "희망 회차: " + current.payload.session + "회차";
+      document.querySelector("#receipt-session").textContent = "희망 회차: " + current.payload.sessions.map((session) => session + "회차").join(", ");
       receipt.hidden = false;
       receipt.focus({ preventScroll: true });
       form.reset();
@@ -138,6 +145,7 @@
     if (!isLive || !parentVerified || !config.accepting || inFlight || complete) return;
     error.hidden = true;
     if (!submission) {
+      validateSessions();
       if (!form.reportValidity()) return;
       const values = new FormData(form);
       submission = {
@@ -147,7 +155,7 @@
           school: values.get("school").trim(),
           studentNumber: values.get("studentNumber"),
           phone: values.get("phone"),
-          session: values.get("session"),
+          sessions: values.getAll("sessions").sort(),
           eligible: values.get("eligible") === "on",
           privacyConsent: values.get("privacyConsent") === "on",
           privacyVersion: config.privacyVersion,

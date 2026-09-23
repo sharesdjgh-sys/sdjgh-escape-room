@@ -76,6 +76,18 @@ function publicConfig_() {
   };
 }
 
+function selectedSessions_(raw) {
+  // Keep older, already-open single-choice forms compatible with this deployment.
+  const sessions = raw.sessions !== undefined ? raw.sessions
+    : typeof raw.session === 'string' ? [raw.session.trim()] : [];
+  if (!Array.isArray(sessions) || sessions.length < 1 || sessions.length > 6 ||
+      Array.from(sessions).some(function (session) { return typeof session !== 'string' || !/^[1-6]$/.test(session); }) ||
+      new Set(sessions).size !== sessions.length) {
+    throw new Error('희망 회차는 1~6회차 중 하나 이상 선택해 주세요.');
+  }
+  return sessions.slice().sort();
+}
+
 function validate_(raw, properties) {
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) throw new Error('입력 내용을 확인해 주세요.');
   const text = function (key, maximum) {
@@ -91,7 +103,8 @@ function validate_(raw, properties) {
     school: text('school', 60),
     studentNumber: text('studentNumber', 5),
     phone: text('phone', 13),
-    session: text('session', 1),
+    // Preserve the old normalized payload shape and hash for single-session retries.
+    session: selectedSessions_(raw).join(', '),
     privacyVersion: text('privacyVersion', 40)
   };
   if (!/^[a-zA-Z0-9-]{16,64}$/.test(payload.requestId)) throw new Error('화면을 새로고침한 후 다시 신청해 주세요.');
@@ -102,7 +115,6 @@ function validate_(raw, properties) {
   if (!/^010-?[0-9]{4}-?[0-9]{4}$/.test(payload.phone)) throw new Error('전화번호는 010-1234-5678 형식으로 입력해 주세요.');
   const digits = payload.phone.replace(/-/g, '');
   payload.phone = digits.slice(0, 3) + '-' + digits.slice(3, 7) + '-' + digits.slice(7);
-  if (!/^[1-6]$/.test(payload.session)) throw new Error('희망 회차를 하나 선택해 주세요.');
   if (raw.eligible !== true) throw new Error('중학교 3학년 여학생만 신청할 수 있습니다.');
   if (raw.privacyConsent !== true) throw new Error('개인정보 수집·이용 안내를 읽고 동의해 주세요.');
   if (payload.privacyVersion !== properties.PRIVACY_VERSION) throw new Error('신청 안내가 변경되었습니다. 화면을 새로고침한 후 다시 확인해 주세요.');

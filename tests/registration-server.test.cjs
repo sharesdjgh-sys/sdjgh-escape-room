@@ -74,7 +74,7 @@ function environment(overrides = {}) {
 function applicant(overrides = {}) {
   return {
     requestId: crypto.randomUUID(), name: "테스트학생", school: "테스트중학교",
-    studentNumber: "30115", phone: "010-0000-0000", session: "1",
+    studentNumber: "30115", phone: "010-0000-0000", sessions: ["1"],
     eligible: true, privacyConsent: true, privacyVersion: "2026-01", website: "",
     ...overrides
   };
@@ -103,7 +103,7 @@ test("a request ID cannot be reused for altered content", () => {
   const env = environment();
   const data = applicant();
   env.submit(data);
-  assert.equal(env.submit({ ...data, session: "2" }).ok, false);
+  assert.equal(env.submit({ ...data, sessions: ["2"] }).ok, false);
   assert.equal(env.rows.length, 2);
 });
 
@@ -125,7 +125,7 @@ test("fifth applicant to a session is accepted because selection is by lottery",
 
 test("eligibility, consent, session, student number, and phone are validated on server", () => {
   const invalid = [
-    { eligible: false }, { privacyConsent: false }, { session: "7" },
+    { eligible: false }, { privacyConsent: false }, { sessions: ["7"] },
     { studentNumber: "20115" }, { studentNumber: "30015" }, { studentNumber: "30100" },
     { phone: "02-1234-5678" }, { privacyVersion: "old" }, { website: "spam" },
     { name: " " }, { name: "bad\nname" }, { requestId: "short" }
@@ -173,5 +173,72 @@ test("uncertain save can be retried without duplicates or leaked internal errors
   assert.ok(!uncertain.message.includes("private"));
   env.flushError(false);
   assert.equal(env.submit(data).ok, true);
+  assert.equal(env.rows.length, 2);
+});
+
+test("stores multiple sessions sorted in the existing cell with one application row", () => {
+  const env = environment();
+  const result = env.submit(applicant({ sessions: ["6", "1", "3"] }));
+  assert.equal(result.ok, true);
+  assert.equal(env.rows.length, 2);
+  assert.equal(env.rows[1][6], "1, 3, 6");
+  assert.equal(env.rows[0][6], "희망회차");
+  assert.equal(env.rows[1].length, 13);
+});
+
+test("accepts all six sessions and preserves duplicate prevention across selections", () => {
+  const env = environment();
+  assert.equal(env.submit(applicant({ sessions: ["1", "2", "3", "4", "5", "6"] })).ok, true);
+  assert.equal(env.rows[1][6], "1, 2, 3, 4, 5, 6");
+  assert.equal(env.submit(applicant({ sessions: ["2", "4"] })).ok, false);
+  assert.equal(env.rows.length, 2);
+});
+
+test("rejects empty, malformed, duplicate, and out-of-range session selections", () => {
+  const invalid = [[], null, "1,3", ["1", "7"], ["1", "1"], [1], [" 1"], [{}], new Array(1), ["1", "2", "3", "4", "5", "6", "1"]];
+  for (const sessions of invalid) {
+    const env = environment();
+    assert.equal(env.submit(applicant({ sessions })).ok, false, JSON.stringify(sessions));
+    assert.equal(env.rows.length, 0);
+  }
+  const env = environment();
+  const missing = applicant();
+  delete missing.sessions;
+  assert.equal(env.submit(missing).ok, false);
+  // A malformed modern field must not be bypassed by adding a legacy field.
+  assert.equal(env.submit(applicant({ sessions: [], session: "1" })).ok, false);
+});
+
+test("multiple-session retries are order independent, including uncertain writes", () => {
+  const env = environment();
+  const data = applicant({ sessions: ["5", "1", "3"] });
+  env.flushError(true);
+  assert.equal(env.submit(data).uncertain, true);
+  env.flushError(false);
+  env.time("2026-10-08T00:00:00+09:00");
+  const retried = env.submit({ ...data, sessions: ["3", "5", "1"] });
+  assert.equal(retried.ok, true);
+  assert.equal(retried.receiptId, env.rows[1][0]);
+  assert.equal(env.rows.length, 2);
+  assert.equal(env.submit({ ...data, sessions: ["1", "3"] }).ok, false);
+});
+
+test("legacy single-session forms and saved request hashes remain compatible", () => {
+  const env = environment();
+  const legacy = applicant();
+  delete legacy.sessions;
+  legacy.session = "2";
+  const result = env.submit(legacy);
+  assert.equal(result.ok, true);
+  assert.equal(env.rows[1][6], "2");
+  const oldPayload = {
+    requestId: legacy.requestId, name: legacy.name, school: legacy.school,
+    studentNumber: legacy.studentNumber, phone: legacy.phone,
+    session: "2", privacyVersion: legacy.privacyVersion
+  };
+  const oldHash = crypto.createHash("sha256").update(JSON.stringify(oldPayload)).digest("hex");
+  assert.equal(env.rows[1][11], oldHash);
+  env.time("2026-10-08T00:00:00+09:00");
+  assert.equal(env.submit({ ...legacy, sessions: ["2"] }).receiptId, result.receiptId);
   assert.equal(env.rows.length, 2);
 });
